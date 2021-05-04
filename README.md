@@ -11,4 +11,4 @@ To automatically re-run when file changes are made use:
 
 # Using Tool
 
-Access the tool at `http://localhost:3000/project_ids/{project ID's}`, e.g. http://localhost:3000/project_ids/LIN,FWI# kilm-esportligaen-enemy-stats
+Access the tool at `http://localhost:3000/stats`
