@@ -148,7 +148,7 @@ exports.stats = async (req, res, next) => {
 			</style>
 			</head>
 			<body>
-				<h1>KILM Enemy Match Statistics</h1>
+				<h1>KILM Upcoming Enemy Match Statistics</h1>
 				${html}
 			</body>
 			</html>
