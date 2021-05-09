@@ -49,6 +49,7 @@ exports.stats = async (req, res, next) => {
 
 				var cleanMap = {
 					name: mapName,
+					played: 0,
 					picked: 0,
 					won: 0,
 					tied: 0,
@@ -77,6 +78,8 @@ exports.stats = async (req, res, next) => {
 					console.log('ERROR Could not find score for match ' + detailedMatchInfoObj.id)
 				}
 
+				map.played = map.played + 1
+
 				teamObj.maps[mapName] = map
 			}
 
@@ -93,23 +96,38 @@ exports.stats = async (req, res, next) => {
 				<table>
 				<tr>
 					<th>Map</th>
+					<th>Played</th>
 					<th>Picked</th>
 					<th>Won</th>
 					<th>Tied</th>
 					<th>Lost</th>
+					<th>Win percentage</th>
 				<tr>
 			`
 
 			for (const [mapName, map] of Object.entries(team.maps)) {
 
+				var color
+				const winPercentage = map.won / map.played * 100
+
+				if (winPercentage < 20) {
+					color = '#00FF00'
+				} else if (winPercentage < 70) {
+					color = '#FFA500'
+				} else {
+					color = '#FF0000'
+				}
+
 				html +=
 				`
 					<tr>
 						<td>${map.name}</td>
+						<td>${map.played}</td>
 						<td>${map.picked}</td>
 						<td>${map.won}</td>
 						<td>${map.tied}</td>
 						<td>${map.lost}</td>
+						<td style="background-color:${color}">${winPercentage.toFixed(0)}%</td>
 					</tr>
 				`
 			}
@@ -140,6 +158,7 @@ exports.stats = async (req, res, next) => {
 			td, th {
 				border: 1px solid #dddddd;
 				padding: 8px;
+				text-align: center;
 			}
 			  
 			th {
