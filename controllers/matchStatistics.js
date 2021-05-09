@@ -110,9 +110,11 @@ exports.stats = async (req, res, next) => {
 				var color
 				const winPercentage = map.won / map.played * 100
 
-				if (winPercentage < 20) {
+				if (winPercentage <= 20) {
 					color = '#00FF00'
-				} else if (winPercentage < 70) {
+				} else if (winPercentage <= 50) {
+					color = '#FFFF00'
+				} else if (winPercentage <= 70) {
 					color = '#FFA500'
 				} else {
 					color = '#FF0000'
