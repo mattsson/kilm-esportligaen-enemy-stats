@@ -41,7 +41,7 @@ exports.stats = async (req, res, next) => {
 				const firstTeam = detailedMatchInfoObj.MatchTeams[0]
 
 				const teamPickedMap = firstTeam.team_id == team.id
-				const mapName = detailedMatchInfoObj.mapName
+				const mapName = detailedMatchInfoObj.mapName.replace(' ', '')
 
 				let matchStatus
 
@@ -53,7 +53,8 @@ exports.stats = async (req, res, next) => {
 					picked: 0,
 					won: 0,
 					tied: 0,
-					lost: 0
+					lost: 0,
+					winPercentage: 0
 				}
 
 				var map
@@ -80,6 +81,8 @@ exports.stats = async (req, res, next) => {
 
 				map.played = map.played + 1
 
+				map.winPercentage = map.won / map.played * 100
+
 				teamObj.maps[mapName] = map
 			}
 
@@ -105,16 +108,20 @@ exports.stats = async (req, res, next) => {
 				<tr>
 			`
 
-			for (const [mapName, map] of Object.entries(team.maps)) {
+			// Create items array
+			const mapsArray = Object.values(team.maps)
+			
+			mapsArray.sort((a,b) => (a.winPercentage > b.winPercentage) ? 1 : ((b.winPercentage > a.winPercentage) ? -1 : 0))
+
+			for (let map of mapsArray) {
 
 				var color
-				const winPercentage = map.won / map.played * 100
 
-				if (winPercentage <= 20) {
+				if (map.winPercentage <= 20) {
 					color = '#00FF00'
-				} else if (winPercentage <= 50) {
+				} else if (map.winPercentage <= 50) {
 					color = '#FFFF00'
-				} else if (winPercentage <= 70) {
+				} else if (map.winPercentage <= 70) {
 					color = '#FFA500'
 				} else {
 					color = '#FF0000'
@@ -129,7 +136,7 @@ exports.stats = async (req, res, next) => {
 						<td>${map.won}</td>
 						<td>${map.tied}</td>
 						<td>${map.lost}</td>
-						<td style="background-color:${color}">${winPercentage.toFixed(0)}%</td>
+						<td style="background-color:${color}">${map.winPercentage.toFixed(0)}%</td>
 					</tr>
 				`
 			}
